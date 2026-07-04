@@ -1,6 +1,4 @@
 import threading
-import threading
-
 from colorama import init
 from database.wallet_db import create_wallet
 from database.schema import create_database
@@ -10,21 +8,18 @@ from core.dashboard import build_dashboard
 from services.telegram_service import send_dashboard
 from bot_ui.menus.dashboard import dashboard_text, dashboard_keyboard
 from core.trade_monitor import start_trade_monitor
-from database.trade_db import save_trade
-from core.test_engine import get_wallet
+from database.trade_db import save_trade, close_trade
 from core.test_engine import (
     get_wallet,
     update_balance,
     get_stats,
     get_position_size,
 )
-
-
-
 from core.scanner import start_scan
 from services.binance_service import get_klines
 from strategies.alphatrend import AlphaTrend
 
+# Test AlphaTrend Strategy
 alpha = AlphaTrend()
 df = get_klines(
     symbol="BTCUSDT",
@@ -32,7 +27,6 @@ df = get_klines(
     limit=200,
 )
 
-alpha = AlphaTrend()
 result = alpha.last_signal(df)
 print("===================================")
 print("AlphaTrend Sonucu")
@@ -44,6 +38,7 @@ print(f"Close       : {result['price']}")
 print(f"AlphaTrend  : {result['alphatrend']}")
 print(f"ATR         : {result['atr']}")
 print(f"MFI         : {result['mfi']}")
+
 data = alpha.calculate(df)
 
 signals = data[
@@ -63,14 +58,8 @@ print(signals[
 ].tail(20))
 
 print()
-
 print("BUY SAYISI :", data["buy"].sum())
 print("SELL SAYISI:", data["sell"].sum())
-
-
-
-
-
 
 init()
 
@@ -87,37 +76,32 @@ print("🚀 Bot çalışıyor...")
 print("📦 Database hazırlanıyor...")
 create_database()
 create_wallet()
+
 print("=" * 50)
 print("🧪 TEST ENGINE")
 print(f"Wallet : {get_wallet()} USDT")
 print(f"Position Size : {get_position_size()} USDT")
 print("=" * 50)
 
-
-
-
-    # Trades tablosunu oluştur
+# Initialize trades table
 try:
-        save_trade(
-            
-            "BUY",
-            0,
-            0,
-            0,
-            0,
-            0
-        )
+    save_trade(
+        "INIT",
+        "BUY",
+        0,
+        0,
+        0,
+        0,
+        0
+    )
 except:
-        pass
-    
-from database.trade_db import close_trade
+    pass
+
+# Close initialization trade
 try:
     close_trade(1, "INIT", 0, 0)
 except:
-    pass              
-            
-            
-            
+    pass
 
 print("✅ Database hazır")
 klines = get_klines("BTCUSDT")
@@ -135,19 +119,12 @@ monitor_thread = threading.Thread(
 )
 
 monitor_thread.start()
-
 scan_thread.start()
 
-
-
 print("📲 Dashboard Telegram'a gönderiliyor...")
-
 send_dashboard(
-
     dashboard_text(),
-
     dashboard_keyboard()
-
 )
 
 print("✅ Dashboard gönderildi")
