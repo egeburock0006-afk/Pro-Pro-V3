@@ -41,7 +41,7 @@ def calculate_roi(entry, exit_price, signal, leverage):
 
 def calculate_profit(entry, exit_price, margin, leverage, signal):
     """
-    Kar/zarar miktarını hesaplar (USDT).
+    ROI ve Kar/zarar miktarını hesaplar (USDT).
     
     Args:
         entry (float): Entry fiyatı
@@ -51,16 +51,16 @@ def calculate_profit(entry, exit_price, margin, leverage, signal):
         signal (str): "BUY" ya da "SELL"
     
     Returns:
-        float: Kar/zarar miktarı
+        tuple: (roi, profit) - (ROI yüzdesi, Kar/zarar miktarı)
     """
     try:
         roi = calculate_roi(entry, exit_price, signal, leverage)
         profit = margin * (roi / 100)
-        return round(profit, 2)
+        return round(roi, 2), round(profit, 2)
     
     except Exception as e:
         logger.error(f"❌ Error calculating profit: {e}")
-        return 0
+        return 0, 0
 
 
 def update_wallet_profit(profit):
