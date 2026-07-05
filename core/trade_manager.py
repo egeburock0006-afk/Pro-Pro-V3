@@ -137,8 +137,7 @@ def check_buy_signal(trade_id, symbol, entry, tp1, tp2, tp3, stop, margin, lever
 
         # TP3
         elif price >= tp3 and tp3_hit == 0:
-            roi = calculate_roi(entry, price, "BUY", leverage)
-            profit = calculate_profit(entry, price, margin, leverage, "BUY")
+            roi, profit = calculate_profit(entry, price, margin, leverage, "BUY")
             wallet = update_balance(profit)
             message = f"💎 {symbol}\n\nTP3 HIT ✅\n\nPrice: {price}\nROI: {roi}%\nProfit: {profit}$\nWallet: {wallet}$"
             send_message(message)
@@ -148,8 +147,7 @@ def check_buy_signal(trade_id, symbol, entry, tp1, tp2, tp3, stop, margin, lever
 
         # Stop Loss
         elif price <= stop and stop_hit == 0:
-            roi = calculate_roi(entry, price, "BUY", leverage)
-            profit = calculate_profit(entry, price, margin, leverage, "BUY")
+            roi, profit = calculate_profit(entry, price, margin, leverage, "BUY")
             wallet = update_balance(profit)
             message = f"🛑 {symbol}\n\nSTOP LOSS ❌\n\nPrice: {price}\nROI: {roi}%\nLoss: {profit}$\nWallet: {wallet}$"
             send_message(message)
@@ -182,8 +180,7 @@ def check_sell_signal(trade_id, symbol, entry, tp1, tp2, tp3, stop, margin, leve
 
         # TP3
         elif price <= tp3 and tp3_hit == 0:
-            roi = calculate_roi(entry, price, "SELL", leverage)
-            profit = calculate_profit(entry, price, margin, leverage, "SELL")
+            roi, profit = calculate_profit(entry, price, margin, leverage, "SELL")
             wallet = update_balance(profit)
             message = f"💎 {symbol}\n\nTP3 HIT ✅\n\nPrice: {price}\nROI: {roi}%\nProfit: {profit}$\nWallet: {wallet}$"
             send_message(message)
@@ -193,8 +190,7 @@ def check_sell_signal(trade_id, symbol, entry, tp1, tp2, tp3, stop, margin, leve
 
         # Stop Loss
         elif price >= stop and stop_hit == 0:
-            roi = calculate_roi(entry, price, "SELL", leverage)
-            profit = calculate_profit(entry, price, margin, leverage, "SELL")
+            roi, profit = calculate_profit(entry, price, margin, leverage, "SELL")
             wallet = update_balance(profit)
             message = f"🛑 {symbol}\n\nSTOP LOSS ❌\n\nPrice: {price}\nROI: {roi}%\nLoss: {profit}$\nWallet: {wallet}$"
             send_message(message)
